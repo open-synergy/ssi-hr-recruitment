@@ -1,4 +1,10 @@
 odoo14-addon-ssi-hr
+odoo14-addon-ssi-hr-career-transition
+odoo14-addon-ssi-hr-employee
+odoo14-addon-ssi-hr-employee-personal-from-work-address
+odoo14-addon-ssi-hr-employee-experience-from-work-address
+odoo14-addon-ssi-hr-employee-language-from-work-address
+odoo14-addon-ssi-hr-employee-identification-from-work-address
 odoo14-addon-ssi-master-data-mixin
 odoo14-addon-ssi-transaction-confirm-mixin
 odoo14-addon-ssi-transaction-open-mixin
@@ -7,3 +13,4 @@ odoo14-addon-ssi-transaction-cancel-mixin
 odoo14-addon-ssi-transaction-terminate-mixin
 odoo14-addon-ssi-duration-mixin
 odoo14-addon-ssi-decorator
+odoo14-addon-ssi-state-change-history-mixin
