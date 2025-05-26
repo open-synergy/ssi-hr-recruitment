@@ -97,7 +97,10 @@ if env.user.id in document.active_approver_user_ids.ids:
             />
     <field name="restrict_user" eval="1" />
     <field name="computation_method">use_group</field>
-    <field name="group_ids" eval="[(6,0,[ref('recruitment_applicant_validator_group')])]" />
+    <field
+                name="group_ids"
+                eval="[(6,0,[ref('recruitment_applicant_validator_group')])]"
+            />
     <field name="restrict_additional" eval="1" />
     <field name="additional_python_code">result = False
 if not document.approval_template_id:
@@ -105,7 +108,10 @@ if not document.approval_template_id:
 </record>
 
 <!-- done -->
-<record id="recruitment_applicant_policy_template_detail_done" model="policy.template_detail">
+<record
+            id="recruitment_applicant_policy_template_detail_done"
+            model="policy.template_detail"
+        >
     <field name="template_id" ref="recruitment_applicant_policy_template" />
     <field
                 name="field_id"
@@ -123,7 +129,10 @@ if not document.approval_template_id:
 </record>
 
 <!-- recruit -->
-<record id="recruitment_applicant_policy_template_detail_recruit" model="policy.template_detail">
+<record
+            id="recruitment_applicant_policy_template_detail_recruit"
+            model="policy.template_detail"
+        >
     <field name="template_id" ref="recruitment_applicant_policy_template" />
     <field
                 name="field_id"
@@ -136,12 +145,18 @@ if not document.approval_template_id:
             />
     <field name="restrict_user" eval="1" />
     <field name="computation_method">use_group</field>
-    <field name="group_ids" eval="[(6,0,[ref('recruitment_applicant_validator_group')])]" />
+    <field
+                name="group_ids"
+                eval="[(6,0,[ref('recruitment_applicant_validator_group')])]"
+            />
     <field name="restrict_additional" eval="0" />
 </record>
 
 <!-- terminate -->
-<record id="recruitment_applicant_policy_template_detail_lost" model="policy.template_detail">
+<record
+            id="recruitment_applicant_policy_template_detail_lost"
+            model="policy.template_detail"
+        >
     <field name="template_id" ref="recruitment_applicant_policy_template" />
     <field
                 name="field_id"
@@ -199,7 +214,10 @@ if not document.approval_template_id:
             />
     <field name="restrict_user" eval="1" />
     <field name="computation_method">use_group</field>
-    <field name="group_ids" eval="[(6,0,[ref('recruitment_applicant_validator_group')])]" />
+    <field
+                name="group_ids"
+                eval="[(6,0,[ref('recruitment_applicant_validator_group')])]"
+            />
     <field name="restrict_additional" eval="0" />
 </record>
 
@@ -219,7 +237,10 @@ if not document.approval_template_id:
             />
     <field name="restrict_user" eval="1" />
     <field name="computation_method">use_group</field>
-    <field name="group_ids" eval="[(6,0,[ref('recruitment_applicant_validator_group')])]" />
+    <field
+                name="group_ids"
+                eval="[(6,0,[ref('recruitment_applicant_validator_group')])]"
+            />
     <field name="restrict_additional" eval="0" />
 </record>
 </data>

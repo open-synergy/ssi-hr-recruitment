@@ -31,7 +31,10 @@
             name="name"
         >Applicant - Responsible to company and all child companies data</field>
     <field name="model_id" ref="model_recruitment_applicant" />
-    <field name="groups" eval="[(4, ref('recruitment_applicant_company_child_group'))]" />
+    <field
+            name="groups"
+            eval="[(4, ref('recruitment_applicant_company_child_group'))]"
+        />
     <field name="domain_force">[('company_id','in',user.company_ids.ids)]</field>
     <field name="perm_unlink" eval="1" />
     <field name="perm_write" eval="1" />

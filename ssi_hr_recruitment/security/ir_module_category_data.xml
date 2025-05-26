@@ -4,15 +4,9 @@
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
 <!-- Configurator -->
-<record
-    id="recruitment_configurator_module_category"
-    model="ir.module.category"
->
+<record id="recruitment_configurator_module_category" model="ir.module.category">
     <field name="name">Recruitment - Configurator</field>
-    <field
-        name="parent_id"
-        ref="ssi_hr.human_resource_configurator_module_category"
-    />
+    <field name="parent_id" ref="ssi_hr.human_resource_configurator_module_category" />
 </record>
 
 <!-- WORKFLOW -->
@@ -31,12 +25,18 @@
 
 <!-- DATA OWNERSHIP -->
 <!-- APPLICANT -->
-<record id="recruitment_applicant_data_ownership_module_category" model="ir.module.category">
+<record
+        id="recruitment_applicant_data_ownership_module_category"
+        model="ir.module.category"
+    >
     <field name="name">Applicant</field>
     <field name="parent_id" ref="ssi_hr.human_resource_data_module_category" />
 </record>
 <!-- VACANCY -->
-<record id="recruitment_vacancy_data_ownership_module_category" model="ir.module.category">
+<record
+        id="recruitment_vacancy_data_ownership_module_category"
+        model="ir.module.category"
+    >
     <field name="name">Vacancy</field>
     <field name="parent_id" ref="ssi_hr.human_resource_data_module_category" />
 </record>

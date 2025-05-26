@@ -2,11 +2,7 @@
 # Copyright 2025 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
-from odoo.tools.safe_eval import safe_eval
-
-from odoo.addons.ssi_decorator import ssi_decorator
+from odoo import api, fields, models
 
 
 class RecruitmentVacancy(models.Model):
@@ -109,9 +105,9 @@ class RecruitmentVacancy(models.Model):
 
     applicant_number = fields.Integer(
         string="Expected New Employees",
-        help="Number of new employees you expected to recruit."
+        help="Number of new employees you expected to recruit.",
     )
-  
+
     applicant_ids = fields.One2many(
         string="Applicants",
         comodel_name="recruitment_applicant",
@@ -125,9 +121,7 @@ class RecruitmentVacancy(models.Model):
         copy=True,
     )
 
-    @api.depends(
-        "applicant_ids"
-    )
+    @api.depends("applicant_ids")
     def _compute_total_applicant(self):
         for record in self:
             record.total_applicant = len(record.applicant_ids.ids)
@@ -144,9 +138,7 @@ class RecruitmentVacancy(models.Model):
     def _compute_total_applicant_recruited(self):
         for record in self:
             record.applicant_recruited = 0
-            recruited = record.applicant_ids.filtered(
-                lambda x: x.state == "recruited"
-            )
+            recruited = record.applicant_ids.filtered(lambda x: x.state == "recruited")
             if recruited:
                 record.applicant_recruited = len(recruited.ids)
 
@@ -164,7 +156,7 @@ class RecruitmentVacancy(models.Model):
         for record in self:
             record.all_recruited = False
             if record.applicant_number == record.applicant_recruited:
-                record.all_recruited = True    
+                record.all_recruited = True
 
     all_recruited = fields.Boolean(
         string="All Recruited",

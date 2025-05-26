@@ -52,8 +52,8 @@
     <field name="arch" type="xml">
         <data>
             <xpath expr="//field[@name='user_id']" position="after">
-                <field name="job_id" options='{"no_open": True, "no_create": True}'/>
-                <field name="applicant_number"/>
+                <field name="job_id" options='{"no_open": True, "no_create": True}' />
+                <field name="applicant_number" />
             </xpath>
             <xpath expr="//group[@name='header_right']" position="inside">
                 <field name="date_start" />
@@ -62,11 +62,11 @@
             <xpath expr="//page[1]" position="before">
                 <page name="page_applicant" string="Applicants">
                     <group>
-                        <field name="applicant_recruited"/>
-                        <field name="total_applicant"/>
-                        <field name="all_recruited" invisible="1"/>
+                        <field name="applicant_recruited" />
+                        <field name="total_applicant" />
+                        <field name="all_recruited" invisible="1" />
                     </group>
-                    <field name="applicant_ids" style="pointer-events:none;"/>
+                    <field name="applicant_ids" style="pointer-events:none;" />
                 </page>
             </xpath>
         </data>

@@ -2,7 +2,8 @@
 # Copyright 2025 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from datetime import datetime
-from odoo import _, api, fields, models, SUPERUSER_ID
+
+from odoo import SUPERUSER_ID, _, api, fields, models
 from odoo.exceptions import ValidationError
 
 from odoo.addons.ssi_decorator import ssi_decorator
@@ -84,7 +85,7 @@ class RecruitmentApplicant(models.Model):
 
 * If active user can see and execute 'Recruit' button""",
     )
-    
+
     @api.model
     def _get_policy_field(self):
         res = super(RecruitmentApplicant, self)._get_policy_field()
@@ -117,7 +118,7 @@ class RecruitmentApplicant(models.Model):
     )
     job_id = fields.Many2one(
         string="Job Position",
-        comodel_name="hr.job", 
+        comodel_name="hr.job",
         required=True,
         readonly=True,
         states={"draft": [("readonly", False)]},
@@ -125,15 +126,16 @@ class RecruitmentApplicant(models.Model):
 
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
-        # retrieve job_id from the context and write the domain: ids + contextual columns (job or default)
-        job_id = self._context.get('default_job_id')
-        search_domain = [('job_ids', '=', False)]
+        job_id = self._context.get("default_job_id")
+        search_domain = [("job_ids", "=", False)]
         if job_id:
-            search_domain = ['|', ('job_ids', '=', job_id)] + search_domain
+            search_domain = ["|", ("job_ids", "=", job_id)] + search_domain
         if stages:
-            search_domain = ['|', ('id', 'in', stages.ids)] + search_domain
+            search_domain = ["|", ("id", "in", stages.ids)] + search_domain
 
-        stage_ids = stages._search(search_domain, order=order, access_rights_uid=SUPERUSER_ID)
+        stage_ids = stages._search(
+            search_domain, order=order, access_rights_uid=SUPERUSER_ID
+        )
         return stages.browse(stage_ids)
 
     @api.depends(
@@ -144,11 +146,19 @@ class RecruitmentApplicant(models.Model):
         for record in self:
             if not record.stage_id:
                 if record.job_id and record.state == "open":
-                    stage_ids = self.env['recruitment_stage'].search([
-                        '|',
-                        ('job_ids', '=', False),
-                        ('job_ids', '=', record.job_id.id),
-                    ], order='sequence asc', limit=1).ids
+                    stage_ids = (
+                        self.env["recruitment_stage"]
+                        .search(
+                            [
+                                "|",
+                                ("job_ids", "=", False),
+                                ("job_ids", "=", record.job_id.id),
+                            ],
+                            order="sequence asc",
+                            limit=1,
+                        )
+                        .ids
+                    )
                     record.stage_id = stage_ids[0] if stage_ids else False
                 else:
                     record.stage_id = False
@@ -175,12 +185,14 @@ class RecruitmentApplicant(models.Model):
         for record in self:
             result = []
             if record.job_id and record.date:
-                vacancy_ids = self.env["recruitment_vacancy"].search([
-                    ("job_id", "=", record.job_id.id),
-                    ("date_start", "<=", record.date),
-                    ("date_end", ">=", record.date),
-                    ("state", "=", "open"),                    
-                ])
+                vacancy_ids = self.env["recruitment_vacancy"].search(
+                    [
+                        ("job_id", "=", record.job_id.id),
+                        ("date_start", "<=", record.date),
+                        ("date_end", ">=", record.date),
+                        ("state", "=", "open"),
+                    ]
+                )
                 result = vacancy_ids.ids
 
             record.allowed_vacancy_ids = result
@@ -256,7 +268,7 @@ class RecruitmentApplicant(models.Model):
         string="Street",
     )
     street2 = fields.Char(
-        string="2nd Street",    
+        string="2nd Street",
     )
     zip = fields.Char(
         string="Zip",
@@ -284,7 +296,7 @@ class RecruitmentApplicant(models.Model):
             ("married", "Married"),
             ("cohabitant", "Legal Cohabitant"),
             ("widower", "Widower"),
-            ("divorced", "Divorced")
+            ("divorced", "Divorced"),
         ],
         default="single",
     )
@@ -299,22 +311,18 @@ class RecruitmentApplicant(models.Model):
     )
     country_id = fields.Many2one(
         string="Nationality (Country)",
-        comodel_name="res.country", 
+        comodel_name="res.country",
     )
     gender = fields.Selection(
         string="Gender",
-        selection=[
-            ("male", "Male"),
-            ("female", "Female"),
-            ("other", "Other")
-        ],
+        selection=[("male", "Male"), ("female", "Female"), ("other", "Other")],
     )
     place_of_birth = fields.Char(
         string="Place of Birth",
     )
     country_of_birth = fields.Many2one(
         string="Country of Birth",
-        comodel_name="res.country", 
+        comodel_name="res.country",
     )
     birthday = fields.Date(
         string="Date of Birth",
@@ -399,10 +407,12 @@ class RecruitmentApplicant(models.Model):
             "zip": self.zip,
             "city": self.city,
             "state_id": self.state_id and self.state_id.id or False,
-            "country_id": self.address_country_id and self.address_country_id.id or False,
+            "country_id": self.address_country_id
+            and self.address_country_id.id
+            or False,
         }
         return data
-    
+
     def _prepare_partner_personal(self):
         self.ensure_one()
         data = {
@@ -414,7 +424,9 @@ class RecruitmentApplicant(models.Model):
             "nationality_id": self.country_id and self.country_id.id or False,
             "religion_id": self.religion_id and self.religion_id.id or False,
             "ethnicity_id": self.ethnicity_id and self.ethnicity_id.id or False,
-            "birth_country_id": self.country_of_birth and self.country_of_birth.id or False,
+            "birth_country_id": self.country_of_birth
+            and self.country_of_birth.id
+            or False,
             "birth_state_id": self.birth_state_id and self.birth_state_id.id or False,
         }
         return data
@@ -468,7 +480,7 @@ class RecruitmentApplicant(models.Model):
             "job_level": record.job_level,
         }
         return data
-    
+
     def _prepare_partner_language(self, record, partner_id):
         self.ensure_one()
         data = {
@@ -481,7 +493,7 @@ class RecruitmentApplicant(models.Model):
             "listen_rating": record.listen_rating,
         }
         return data
-    
+
     def _prepare_partner_id_number(self, record, partner_id):
         self.ensure_one()
         data = {
@@ -520,12 +532,15 @@ class RecruitmentApplicant(models.Model):
             "work_email": self.work_email,
         }
         return data
-    
+
     def action_recruit(self):
         obj_employee = self.env["hr.employee"]
         obj_res_partner = self.env["res.partner"]
         for record in self:
-            if record.vacancy_id.applicant_recruited == record.vacancy_id.applicant_number:
+            if (
+                record.vacancy_id.applicant_recruited
+                == record.vacancy_id.applicant_number
+            ):
                 error_message = """
                 Document Type: %s
                 Database ID: %s
@@ -537,12 +552,10 @@ class RecruitmentApplicant(models.Model):
                     record.vacancy_id.applicant_number,
                 )
                 raise ValidationError(_(error_message))
-            
+
             try:
                 if not record.employee_id:
-                    partner_id = obj_res_partner.create(
-                        record._prepare_partner_data()
-                    )
+                    partner_id = obj_res_partner.create(record._prepare_partner_data())
                     employee_id = obj_employee.create(
                         record._prepare_employee_data(partner_id)
                     )
@@ -555,12 +568,16 @@ class RecruitmentApplicant(models.Model):
                     if record.certification_ids:
                         for certification in record.certification_ids:
                             self.env["partner.certification"].create(
-                                record._prepare_partner_certification(certification, partner_id)
+                                record._prepare_partner_certification(
+                                    certification, partner_id
+                                )
                             )
                     if record.experience_ids:
                         for experience in record.experience_ids:
                             self.env["partner.experience"].create(
-                                record._prepare_partner_experience(experience, partner_id)
+                                record._prepare_partner_experience(
+                                    experience, partner_id
+                                )
                             )
                     # LANGUANGES
                     if record.language_ids:
@@ -573,13 +590,13 @@ class RecruitmentApplicant(models.Model):
                         for id_number in record.id_number_ids:
                             self.env["res.partner.id_number"].create(
                                 record._prepare_partner_id_number(id_number, partner_id)
-                            )             
+                            )
                 else:
                     error_message = _("Duplicate employee")
-                    raise ValidationError(error_message)    
+                    raise ValidationError(error_message)
             except Exception as e:
                 error_message = _(
-                """
+                    """
                 Context: Creating a new data
                 Model: hr.employee
                 Problem: %s
@@ -588,27 +605,34 @@ class RecruitmentApplicant(models.Model):
                     % (e)
                 )
                 raise ValidationError(error_message)
-            record.write({
-                "employee_id": employee_id.id,
-                "state": "recruited",
-            })
+            record.write(
+                {
+                    "employee_id": employee_id.id,
+                    "state": "recruited",
+                }
+            )
 
     @ssi_decorator.post_approve_action()
     def _populate_applicant_stage_ids(self):
         if self.applicant_stage_ids:
             self.mapped("applicant_stage_ids").unlink()
 
-        stage_ids = self.env["recruitment_stage"].search([
-            "|",
-            ("job_ids", "=", False),
-            ("job_ids", "=", self.job_id.id),
-        ], order="sequence asc")
+        stage_ids = self.env["recruitment_stage"].search(
+            [
+                "|",
+                ("job_ids", "=", False),
+                ("job_ids", "=", self.job_id.id),
+            ],
+            order="sequence asc",
+        )
         if stage_ids:
             for stage in stage_ids:
-                self.env["recruitment_applicant_stage"].create({
-                    "applicant_id": self.id,
-                    "stage_id": stage.id,
-                })
+                self.env["recruitment_applicant_stage"].create(
+                    {
+                        "applicant_id": self.id,
+                        "stage_id": stage.id,
+                    }
+                )
 
     @api.onchange(
         "job_id",
@@ -616,7 +640,7 @@ class RecruitmentApplicant(models.Model):
     )
     def onchange_vacancy_id(self):
         self.vacancy_id = False
-    
+
 
 class RecruitmentApplicantStage(models.Model):
     _name = "recruitment_applicant_stage"

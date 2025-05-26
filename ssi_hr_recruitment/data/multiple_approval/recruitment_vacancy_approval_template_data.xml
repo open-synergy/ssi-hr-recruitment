@@ -11,7 +11,10 @@
     <field name="python_code">result = True</field>
     <field name="validate_sequence" eval="1" />
 </record>
-<record id="recruitment_vacancy_approval_template_detail" model="approval.template_detail">
+<record
+            id="recruitment_vacancy_approval_template_detail"
+            model="approval.template_detail"
+        >
     <field name="template_id" ref="recruitment_vacancy_approval_template" />
     <field name="approver_selection_method">use_group</field>
     <field

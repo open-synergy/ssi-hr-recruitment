@@ -2,8 +2,7 @@
 # Copyright 2025 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models, tools
-from odoo.exceptions import UserError
+from odoo import fields, models
 
 
 class ApplicantIDNumber(models.Model):
