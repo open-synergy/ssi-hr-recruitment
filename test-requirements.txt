@@ -14,3 +14,4 @@ odoo14-addon-ssi-transaction-terminate-mixin
 odoo14-addon-ssi-duration-mixin
 odoo14-addon-ssi-decorator
 odoo14-addon-ssi-state-change-history-mixin
+odoo-yaml-test
