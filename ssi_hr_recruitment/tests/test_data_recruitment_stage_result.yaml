@@ -1,0 +1,75 @@
+scenarios:
+  - name: "Recruitment Stage Result - Create"
+    steps:
+      - step: "Create stage result"
+        action: "create"
+        model: "recruitment_stage_result"
+        save_as: "result"
+        values:
+          name: "Test Result"
+          code: "TR001"
+
+      - step: "Assert result created"
+        action: "assert"
+        target: "result"
+        asserts:
+          id:
+            type: "value"
+            operator: "is_truthy"
+          name:
+            type: "value"
+            expected: "Test Result"
+          code:
+            type: "value"
+            expected: "TR001"
+
+  - name: "Recruitment Stage Result - Edit"
+    steps:
+      - step: "Create stage result"
+        action: "create"
+        model: "recruitment_stage_result"
+        save_as: "result"
+        values:
+          name: "Result To Edit"
+          code: "RTE001"
+
+      - step: "Write new name"
+        action: "write"
+        target: "result"
+        values:
+          name: "Result Edited"
+          code: "RE001"
+
+      - step: "Assert updated"
+        action: "assert"
+        target: "result"
+        asserts:
+          name:
+            type: "value"
+            expected: "Result Edited"
+          code:
+            type: "value"
+            expected: "RE001"
+
+  - name: "Recruitment Stage Result - Delete"
+    steps:
+      - step: "Create stage result to delete"
+        action: "create"
+        model: "recruitment_stage_result"
+        save_as: "result"
+        values:
+          name: "Result To Delete"
+          code: "RTD001"
+
+      - step: "Delete result"
+        action: "call"
+        target: "result"
+        method: "unlink"
+
+      - step: "Verify deleted"
+        action: "search"
+        model: "recruitment_stage_result"
+        domain:
+          - ["name", "=", "Result To Delete"]
+        save_as: "search_result"
+        expect_count: 0

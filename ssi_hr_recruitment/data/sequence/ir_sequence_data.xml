@@ -2,8 +2,7 @@
 <!-- Copyright 2025 OpenSynergy Indonesia
      Copyright 2025 PT. Simetri Sinergi Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
-<odoo>
-<data noupdate="1">
+<odoo noupdate="1">
 <!-- APPLICANT -->
 <record id="sequence_recruitment_applicant" model="ir.sequence">
     <field name="name">Applicant</field>
@@ -26,5 +25,4 @@
     <field name="use_date_range" eval="1" />
     <field eval="False" name="company_id" />
 </record>
-</data>
 </odoo>

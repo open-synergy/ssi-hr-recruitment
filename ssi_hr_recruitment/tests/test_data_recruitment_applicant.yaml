@@ -1,0 +1,370 @@
+scenarios:
+  - name: "Recruitment Applicant - Full Workflow: draft to open"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job Applicant"
+
+      - step: "Setup - create vacancy in open state"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 2
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Confirm vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache after confirm"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Approve vacancy to open"
+        action: "call"
+        target: "vacancy"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache after open"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Create applicant in draft"
+        action: "create"
+        model: "recruitment_applicant"
+        save_as: "applicant"
+        as_user: "base.user_admin"
+        values:
+          applicant_name: "Test Applicant One"
+          job_id: "EVAL: registry['job'].id"
+          vacancy_id: "EVAL: registry['vacancy'].id"
+          date: 2025-01-15
+
+      - step: "Assert applicant created in draft"
+        action: "assert"
+        target: "applicant"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+          applicant_name:
+            type: "value"
+            expected: "Test Applicant One"
+          is_employee_created:
+            type: "value"
+            expected: false
+
+      - step: "Confirm applicant"
+        action: "call"
+        target: "applicant"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Invalidate applicant cache after confirm"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Approve applicant to open"
+        action: "call"
+        target: "applicant"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "open"
+
+  - name: "Recruitment Applicant - Reject workflow"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job App Reject"
+
+      - step: "Setup - create vacancy"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Confirm vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Approve vacancy to open"
+        action: "call"
+        target: "vacancy"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Create applicant"
+        action: "create"
+        model: "recruitment_applicant"
+        save_as: "applicant"
+        as_user: "base.user_admin"
+        values:
+          applicant_name: "Test Applicant Reject"
+          job_id: "EVAL: registry['job'].id"
+          vacancy_id: "EVAL: registry['vacancy'].id"
+          date: 2025-01-20
+
+      - step: "Confirm applicant"
+        action: "call"
+        target: "applicant"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate applicant cache"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Reject applicant"
+        action: "call"
+        target: "applicant"
+        method: "action_reject_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "reject"
+
+  - name: "Recruitment Applicant - Terminate workflow"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job App Terminate"
+
+      - step: "Setup - create vacancy"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Confirm vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Approve vacancy to open"
+        action: "call"
+        target: "vacancy"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache after open"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Create applicant"
+        action: "create"
+        model: "recruitment_applicant"
+        save_as: "applicant"
+        as_user: "base.user_admin"
+        values:
+          applicant_name: "Test Applicant Terminate"
+          job_id: "EVAL: registry['job'].id"
+          vacancy_id: "EVAL: registry['vacancy'].id"
+          date: 2025-01-25
+
+      - step: "Confirm applicant"
+        action: "call"
+        target: "applicant"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate applicant cache"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Approve applicant to open"
+        action: "call"
+        target: "applicant"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate applicant cache"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Terminate applicant"
+        action: "call"
+        target: "applicant"
+        method: "action_terminate"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+        asserts:
+          state:
+            type: "value"
+            expected: "terminate"
+
+  - name: "Recruitment Applicant - With personal info"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job App Experience"
+
+      - step: "Setup - create recruitment stage"
+        action: "create"
+        model: "recruitment_stage"
+        save_as: "stage"
+        values:
+          name: "Interview Stage"
+          code: "IS001"
+          sequence: 10
+
+      - step: "Setup - create stage result"
+        action: "create"
+        model: "recruitment_stage_result"
+        save_as: "stage_result"
+        values:
+          name: "Pass"
+          code: "PASS"
+
+      - step: "Setup - create vacancy"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Confirm vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Approve vacancy to open"
+        action: "call"
+        target: "vacancy"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Create applicant with personal info"
+        action: "create"
+        model: "recruitment_applicant"
+        save_as: "applicant"
+        as_user: "base.user_admin"
+        values:
+          applicant_name: "Test Applicant Experience"
+          job_id: "EVAL: registry['job'].id"
+          vacancy_id: "EVAL: registry['vacancy'].id"
+          date: 2025-02-01
+          gender: "male"
+          marital: "single"
+          expected_salary: 5000000.0
+
+      - step: "Assert personal info stored"
+        action: "assert"
+        target: "applicant"
+        asserts:
+          gender:
+            type: "value"
+            expected: "male"
+          marital:
+            type: "value"
+            expected: "single"
+          expected_salary:
+            type: "value"
+            expected: 5000000.0
+
+      - step: "Confirm applicant"
+        action: "call"
+        target: "applicant"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate applicant cache"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Approve applicant to open"
+        action: "call"
+        target: "applicant"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate applicant cache after open"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Assert applicant is open"
+        action: "assert"
+        target: "applicant"
+        asserts:
+          state:
+            type: "value"
+            expected: "open"
