@@ -1,0 +1,205 @@
+scenarios:
+  - name: "Recruitment Vacancy - Full Workflow: draft to done"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job RV"
+
+      - step: "Create vacancy in draft"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 2
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Assert vacancy created in draft"
+        action: "assert"
+        target: "vacancy"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+          total_applicant:
+            type: "value"
+            expected: 0
+          all_recruited:
+            type: "value"
+            expected: false
+
+      - step: "Confirm vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Approve vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "open"
+
+      - step: "Invalidate cache after open"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Mark vacancy as done"
+        action: "call"
+        target: "vacancy"
+        method: "action_done"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+  - name: "Recruitment Vacancy - Cancel workflow"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job RV Cancel"
+
+      - step: "Create vacancy"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Confirm vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Reject vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_reject_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "reject"
+
+  - name: "Recruitment Vacancy - Terminate workflow"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job RV Terminate"
+
+      - step: "Create vacancy"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Confirm and approve vacancy to open"
+        action: "call"
+        target: "vacancy"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Approve to open"
+        action: "call"
+        target: "vacancy"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after open"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Terminate vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_terminate"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+        asserts:
+          state:
+            type: "value"
+            expected: "terminate"
+
+  - name: "Recruitment Vacancy - Compute fields"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job RV Compute"
+
+      - step: "Create vacancy with 3 expected employees"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 3
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Assert total applicant is 0"
+        action: "assert"
+        target: "vacancy"
+        asserts:
+          total_applicant:
+            type: "value"
+            expected: 0
+          applicant_recruited:
+            type: "value"
+            expected: 0
+          all_recruited:
+            type: "value"
+            expected: false

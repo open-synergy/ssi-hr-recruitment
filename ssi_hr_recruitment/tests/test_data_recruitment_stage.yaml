@@ -1,0 +1,78 @@
+scenarios:
+  - name: "Recruitment Stage - Create"
+    steps:
+      - step: "Create recruitment stage"
+        action: "create"
+        model: "recruitment_stage"
+        save_as: "stage"
+        values:
+          name: "Test Stage"
+          code: "TS001"
+          sequence: 10
+
+      - step: "Assert stage created"
+        action: "assert"
+        target: "stage"
+        asserts:
+          id:
+            type: "value"
+            operator: "is_truthy"
+          name:
+            type: "value"
+            expected: "Test Stage"
+          sequence:
+            type: "value"
+            expected: 10
+
+  - name: "Recruitment Stage - Edit"
+    steps:
+      - step: "Create recruitment stage"
+        action: "create"
+        model: "recruitment_stage"
+        save_as: "stage"
+        values:
+          name: "Stage To Edit"
+          code: "STE001"
+          sequence: 20
+
+      - step: "Write new name"
+        action: "write"
+        target: "stage"
+        values:
+          name: "Stage Edited"
+          sequence: 30
+
+      - step: "Assert name updated"
+        action: "assert"
+        target: "stage"
+        asserts:
+          name:
+            type: "value"
+            expected: "Stage Edited"
+          sequence:
+            type: "value"
+            expected: 30
+
+  - name: "Recruitment Stage - Delete"
+    steps:
+      - step: "Create recruitment stage to delete"
+        action: "create"
+        model: "recruitment_stage"
+        save_as: "stage"
+        values:
+          name: "Stage To Delete"
+          code: "STD001"
+          sequence: 99
+
+      - step: "Delete stage"
+        action: "call"
+        target: "stage"
+        method: "unlink"
+
+      - step: "Verify deleted"
+        action: "search"
+        model: "recruitment_stage"
+        domain:
+          - ["name", "=", "Stage To Delete"]
+        save_as: "result"
+        expect_count: 0
