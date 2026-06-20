@@ -18,7 +18,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[ssi_hr_recruitment](ssi_hr_recruitment/) | 14.0.1.1.0 |  | HR - Recruitment
+[ssi_hr_recruitment](ssi_hr_recruitment/) | 14.0.1.2.0 |  | HR - Recruitment
 [ssi_hr_recruitment_career_transition](ssi_hr_recruitment_career_transition/) | 14.0.1.1.0 |  | HR - Recruitment + Career Transition
 
 [//]: # (end addons)
