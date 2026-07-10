@@ -20,6 +20,8 @@ addon | version | maintainers | summary
 --- | --- | --- | ---
 [ssi_hr_recruitment](ssi_hr_recruitment/) | 14.0.1.2.0 |  | HR - Recruitment
 [ssi_hr_recruitment_career_transition](ssi_hr_recruitment_career_transition/) | 14.0.1.1.0 |  | HR - Recruitment + Career Transition
+[ssi_hr_recruitment_career_transition_operating_unit](ssi_hr_recruitment_career_transition_operating_unit/) | 14.0.1.0.0 |  | HR - Recruitment + Career Transition + Operating Unit
+[ssi_hr_recruitment_operating_unit](ssi_hr_recruitment_operating_unit/) | 14.0.1.0.0 |  | HR - Recruitment + Operating Unit
 
 [//]: # (end addons)
 

@@ -10,6 +10,8 @@ setuptools.setup(
     install_requires=[
         'odoo14-addon-ssi_hr_recruitment',
         'odoo14-addon-ssi_hr_recruitment_career_transition',
+        'odoo14-addon-ssi_hr_recruitment_career_transition_operating_unit',
+        'odoo14-addon-ssi_hr_recruitment_operating_unit',
     ],
     classifiers=[
         'Programming Language :: Python',
