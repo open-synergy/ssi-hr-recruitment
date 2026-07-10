@@ -8,10 +8,7 @@
 <record id="recruitment_applicant_view_tree" model="ir.ui.view">
     <field name="name">recruitment_applicant - tree - operating unit</field>
     <field name="model">recruitment_applicant</field>
-    <field
-            name="inherit_id"
-            ref="ssi_hr_recruitment.recruitment_applicant_view_tree"
-        />
+    <field name="inherit_id" ref="ssi_hr_recruitment.recruitment_applicant_view_tree" />
     <field name="arch" type="xml">
         <data>
             <xpath expr="//field[@name='company_id']" position="after">
@@ -57,10 +54,7 @@
 <record id="recruitment_applicant_view_form" model="ir.ui.view">
     <field name="name">recruitment_applicant - form - operating unit</field>
     <field name="model">recruitment_applicant</field>
-    <field
-            name="inherit_id"
-            ref="ssi_hr_recruitment.recruitment_applicant_view_form"
-        />
+    <field name="inherit_id" ref="ssi_hr_recruitment.recruitment_applicant_view_form" />
     <field name="arch" type="xml">
         <data>
             <xpath expr="//field[@name='company_id']" position="after">
