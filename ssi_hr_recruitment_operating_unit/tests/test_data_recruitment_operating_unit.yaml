@@ -1,0 +1,126 @@
+scenarios:
+  - name: "Recruitment Applicant - Operating Unit CRUD"
+    steps:
+      - step: "Load main operating unit"
+        action: "ref"
+        xml_id: "operating_unit.main_operating_unit"
+        save_as: "main_ou"
+
+      - step: "Create another operating unit"
+        action: "create"
+        model: "operating.unit"
+        save_as: "other_ou"
+        values:
+          name: "Other Operating Unit - Applicant"
+          code: "OU-APP-01"
+          company_id: "base.main_company"
+          partner_id: "base.main_partner"
+
+      - step: "Create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job Applicant OU"
+
+      - step: "Create vacancy"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Create applicant with operating unit"
+        action: "create"
+        model: "recruitment_applicant"
+        save_as: "applicant"
+        values:
+          applicant_name: "Test Applicant OU"
+          job_id: "EVAL: registry['job'].id"
+          vacancy_id: "EVAL: registry['vacancy'].id"
+          date: 2025-03-01
+          operating_unit_id: "EVAL: registry['main_ou'].id"
+
+      - step: "Assert applicant operating unit is main OU"
+        action: "assert"
+        target: "applicant"
+        asserts:
+          operating_unit_id:
+            type: "m2o"
+            expected_xml_id: "operating_unit.main_operating_unit"
+
+      - step: "Write applicant operating unit to another OU"
+        action: "write"
+        target: "applicant"
+        values:
+          operating_unit_id: "EVAL: registry['other_ou'].id"
+
+      - step: "Verify applicant operating unit changed"
+        action: "search"
+        model: "recruitment_applicant"
+        domain:
+          - ["id", "=", "EVAL: registry['applicant'].id"]
+          - ["operating_unit_id", "=", "EVAL: registry['other_ou'].id"]
+        save_as: "applicant_after_write"
+        expect_count: 1
+
+  - name: "Recruitment Vacancy - Operating Unit CRUD"
+    steps:
+      - step: "Load main operating unit"
+        action: "ref"
+        xml_id: "operating_unit.main_operating_unit"
+        save_as: "main_ou"
+
+      - step: "Create another operating unit"
+        action: "create"
+        model: "operating.unit"
+        save_as: "other_ou"
+        values:
+          name: "Other Operating Unit - Vacancy"
+          code: "OU-VAC-01"
+          company_id: "base.main_company"
+          partner_id: "base.main_partner"
+
+      - step: "Create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job Vacancy OU"
+
+      - step: "Create vacancy with operating unit"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+          operating_unit_id: "EVAL: registry['main_ou'].id"
+
+      - step: "Assert vacancy operating unit is main OU"
+        action: "assert"
+        target: "vacancy"
+        asserts:
+          operating_unit_id:
+            type: "m2o"
+            expected_xml_id: "operating_unit.main_operating_unit"
+
+      - step: "Write vacancy operating unit to another OU"
+        action: "write"
+        target: "vacancy"
+        values:
+          operating_unit_id: "EVAL: registry['other_ou'].id"
+
+      - step: "Verify vacancy operating unit changed"
+        action: "search"
+        model: "recruitment_vacancy"
+        domain:
+          - ["id", "=", "EVAL: registry['vacancy'].id"]
+          - ["operating_unit_id", "=", "EVAL: registry['other_ou'].id"]
+        save_as: "vacancy_after_write"
+        expect_count: 1

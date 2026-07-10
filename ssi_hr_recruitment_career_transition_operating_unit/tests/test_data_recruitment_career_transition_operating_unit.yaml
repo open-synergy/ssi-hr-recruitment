@@ -1,0 +1,269 @@
+scenarios:
+  - name: "Recruitment Career Transition OU - Propagate applicant OU to join transition"
+    steps:
+      - step: "Load main operating unit"
+        action: "ref"
+        xml_id: "operating_unit.main_operating_unit"
+        save_as: "main_ou"
+
+      - step: "Setup - create career transition type"
+        action: "create"
+        model: "employee_career_transition_type"
+        save_as: "transition_type"
+        values:
+          name: "Join New Employee OU"
+          code: "JNE-OU-001"
+
+      - step: "Setup - get current company"
+        action: "search"
+        model: "res.company"
+        domain:
+          - ["id", "=", "EVAL: env.company.id"]
+        save_as: "company"
+        limit: 1
+
+      - step: "Setup - set company join transition type"
+        action: "write"
+        target: "company"
+        values:
+          join_transition_type_id: "EVAL: registry['transition_type'].id"
+
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job RCT OU"
+
+      - step: "Setup - create vacancy"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Confirm vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Approve vacancy to open"
+        action: "call"
+        target: "vacancy"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Create applicant with operating unit"
+        action: "create"
+        model: "recruitment_applicant"
+        save_as: "applicant"
+        as_user: "base.user_admin"
+        values:
+          applicant_name: "Test Applicant RCT OU"
+          job_id: "EVAL: registry['job'].id"
+          vacancy_id: "EVAL: registry['vacancy'].id"
+          date: 2025-03-01
+          operating_unit_id: "EVAL: registry['main_ou'].id"
+
+      - step: "Confirm applicant"
+        action: "call"
+        target: "applicant"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate applicant cache"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Approve applicant to open"
+        action: "call"
+        target: "applicant"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate applicant cache after open"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Recruit applicant"
+        action: "call"
+        target: "applicant"
+        method: "action_recruit"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+
+      - step: "Invalidate applicant cache after recruit"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Assert applicant recruited with join transition"
+        action: "assert"
+        target: "applicant"
+        asserts:
+          state:
+            type: "value"
+            expected: "recruited"
+          is_employee_created:
+            type: "value"
+            expected: true
+          join_transition_id:
+            type: "value"
+            operator: "is_truthy"
+
+      - step: "Verify join transition operating unit matches applicant"
+        action: "search"
+        model: "employee_career_transition"
+        domain:
+          - ["id", "=", "EVAL: registry['applicant'].join_transition_id.id"]
+          - ["operating_unit_id", "=", "EVAL: registry['main_ou'].id"]
+        save_as: "join_transition_check"
+        expect_count: 1
+
+  - name: "Recruitment Career Transition OU - Applicant without OU does not error"
+    steps:
+      - step: "Setup - create career transition type"
+        action: "create"
+        model: "employee_career_transition_type"
+        save_as: "transition_type"
+        values:
+          name: "Join New Employee OU No OU"
+          code: "JNE-OU-002"
+
+      - step: "Setup - get current company"
+        action: "search"
+        model: "res.company"
+        domain:
+          - ["id", "=", "EVAL: env.company.id"]
+        save_as: "company"
+        limit: 1
+
+      - step: "Setup - set company join transition type"
+        action: "write"
+        target: "company"
+        values:
+          join_transition_type_id: "EVAL: registry['transition_type'].id"
+
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job RCT OU No OU"
+
+      - step: "Setup - create vacancy"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Confirm vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Approve vacancy to open"
+        action: "call"
+        target: "vacancy"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate vacancy cache"
+        action: "call"
+        target: "vacancy"
+        method: "invalidate_cache"
+
+      - step: "Create applicant without operating unit"
+        action: "create"
+        model: "recruitment_applicant"
+        save_as: "applicant"
+        as_user: "base.user_admin"
+        values:
+          applicant_name: "Test Applicant RCT No OU"
+          job_id: "EVAL: registry['job'].id"
+          vacancy_id: "EVAL: registry['vacancy'].id"
+          date: 2025-03-01
+
+      - step: "Force applicant operating unit empty"
+        action: "write"
+        target: "applicant"
+        values:
+          operating_unit_id: false
+
+      - step: "Confirm applicant"
+        action: "call"
+        target: "applicant"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate applicant cache"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Approve applicant to open"
+        action: "call"
+        target: "applicant"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate applicant cache after open"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Recruit applicant without operating unit"
+        action: "call"
+        target: "applicant"
+        method: "action_recruit"
+        as_user: "base.user_admin"
+        context:
+          bypass_policy_check: true
+
+      - step: "Invalidate applicant cache after recruit"
+        action: "call"
+        target: "applicant"
+        method: "invalidate_cache"
+
+      - step: "Assert applicant recruited without error"
+        action: "assert"
+        target: "applicant"
+        asserts:
+          state:
+            type: "value"
+            expected: "recruited"
+          is_employee_created:
+            type: "value"
+            expected: true
+          join_transition_id:
+            type: "value"
+            operator: "is_truthy"
