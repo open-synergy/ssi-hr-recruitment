@@ -2,7 +2,8 @@
 # Copyright 2025 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class RecruitmentVacancy(models.Model):
@@ -107,6 +108,44 @@ class RecruitmentVacancy(models.Model):
         string="Expected New Employees",
         help="Number of new employees you expected to recruit.",
     )
+
+    expected_join_date = fields.Date(
+        string="Expected Join Date",
+        help="Date on which the new employees are expected to join.",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
+    )
+
+    reason = fields.Text(
+        string="Reason",
+        help="Reason why this vacancy is needed.",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
+    )
+
+    @api.constrains("expected_join_date", "date_start")
+    def _constrains_expected_join_date(self):
+        """Ensure the expected join date is not before the start date.
+
+        :raises ValidationError: if the expected join date is earlier
+            than the vacancy start date.
+        """
+        for record in self:
+            if (
+                record.expected_join_date
+                and record.date_start
+                and record.expected_join_date < record.date_start
+            ):
+                error_message = _(
+                    """
+Context: Validate vacancy expected join date
+Database ID: %s
+Problem: Expected join date is earlier than start date
+Solution: Set expected join date on or after start date
+"""
+                    % (record.id,)
+                )
+                raise ValidationError(error_message)
 
     applicant_ids = fields.One2many(
         string="Applicants",

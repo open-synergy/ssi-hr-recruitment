@@ -13,7 +13,19 @@
     <field name="mode">primary</field>
     <field name="arch" type="xml">
        <data>
+            <xpath expr="//group[@name='dom_state']" position="before">
+                <filter
+                        name="filter_has_expected_join_date"
+                        string="Has Expected Join Date"
+                        domain="[('expected_join_date', '!=', False)]"
+                    />
+            </xpath>
             <xpath expr="//group[@name='group_by']" position="inside">
+                <filter
+                        name="grp_expected_join_date"
+                        string="Expected Join Date"
+                        context="{'group_by':'expected_join_date'}"
+                    />
                 <filter
                         name="grp_date_start"
                         string="Date Start"
@@ -54,6 +66,7 @@
             <xpath expr="//field[@name='user_id']" position="after">
                 <field name="job_id" options='{"no_open": True, "no_create": True}' />
                 <field name="applicant_number" />
+                <field name="expected_join_date" />
             </xpath>
             <xpath expr="//group[@name='header_right']" position="inside">
                 <field name="date_start" />
@@ -67,6 +80,9 @@
                         <field name="all_recruited" invisible="1" />
                     </group>
                     <field name="applicant_ids" style="pointer-events:none;" />
+                </page>
+                <page name="page_reason" string="Reason">
+                    <field name="reason" />
                 </page>
             </xpath>
         </data>
