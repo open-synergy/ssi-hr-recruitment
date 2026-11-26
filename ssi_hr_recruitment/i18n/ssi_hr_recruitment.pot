@@ -26,6 +26,17 @@ msgid ""
 msgstr ""
 
 #. module: ssi_hr_recruitment
+#: code:addons/ssi_hr_recruitment/models/recruitment_vacancy.py:0
+#, python-format
+msgid ""
+"\n"
+"Context: Validate vacancy expected join date\n"
+"Database ID: %s\n"
+"Problem: Expected join date is earlier than start date\n"
+"Solution: Set expected join date on or after start date\n"
+msgstr ""
+
+#. module: ssi_hr_recruitment
 #: model_terms:ir.ui.view,arch_db:ssi_hr_recruitment.recruitment_applicant_view_form
 msgid "# Certificate"
 msgstr ""
@@ -735,6 +746,11 @@ msgid "Date of Birth"
 msgstr ""
 
 #. module: ssi_hr_recruitment
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_vacancy__expected_join_date
+msgid "Date on which the new employees are expected to join."
+msgstr ""
+
+#. module: ssi_hr_recruitment
 #: model_terms:ir.ui.view,arch_db:ssi_hr_recruitment.recruitment_applicant_view_form
 msgid "Dependant"
 msgstr ""
@@ -875,6 +891,12 @@ msgid "Ethnicity"
 msgstr ""
 
 #. module: ssi_hr_recruitment
+#: model:ir.model.fields,field_description:ssi_hr_recruitment.field_recruitment_vacancy__expected_join_date
+#: model_terms:ir.ui.view,arch_db:ssi_hr_recruitment.recruitment_vacancy_view_search
+msgid "Expected Join Date"
+msgstr ""
+
+#. module: ssi_hr_recruitment
 #: model:ir.model.fields,field_description:ssi_hr_recruitment.field_recruitment_vacancy__applicant_number
 msgid "Expected New Employees"
 msgstr ""
@@ -972,6 +994,14 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr ""
 
 #. module: ssi_hr_recruitment
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_applicant__note
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_vacancy__note
+msgid ""
+"Free-form note attached to the document, used for any additional remarks or "
+"information related to the transaction."
+msgstr ""
+
+#. module: ssi_hr_recruitment
 #: model:ir.model.fields.selection,name:ssi_hr_recruitment.selection__applicant_language__name__fr_be
 msgid "French (BE) / Français (BE)"
 msgstr ""
@@ -1034,6 +1064,11 @@ msgstr ""
 #. module: ssi_hr_recruitment
 #: model:ir.model.fields.selection,name:ssi_hr_recruitment.selection__applicant_language__name__gu_in
 msgid "Gujarati / ગુજરાતી"
+msgstr ""
+
+#. module: ssi_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:ssi_hr_recruitment.recruitment_vacancy_view_search
+msgid "Has Expected Join Date"
 msgstr ""
 
 #. module: ssi_hr_recruitment
@@ -1615,6 +1650,17 @@ msgid "Other"
 msgstr ""
 
 #. module: ssi_hr_recruitment
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_applicant__company_partner_id
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_vacancy__company_partner_id
+msgid ""
+"Partner (res.partner) linked to the document's company\n"
+"\n"
+"* Automatically follows 'company_id.partner_id'.\n"
+"* Used for reporting/printing documents that require the company-level\n"
+"  partner instead of the responsible user's partner."
+msgstr ""
+
+#. module: ssi_hr_recruitment
 #: model:ir.model.fields.selection,name:ssi_hr_recruitment.selection__applicant_language__name__fa_ir
 msgid "Persian / فارس"
 msgstr ""
@@ -1675,6 +1721,17 @@ msgstr ""
 #. module: ssi_hr_recruitment
 #: model:ir.model.fields,field_description:ssi_hr_recruitment.field_applicant_language__read_rating
 msgid "Reading"
+msgstr ""
+
+#. module: ssi_hr_recruitment
+#: model:ir.model.fields,field_description:ssi_hr_recruitment.field_recruitment_vacancy__reason
+#: model_terms:ir.ui.view,arch_db:ssi_hr_recruitment.recruitment_vacancy_view_form
+msgid "Reason"
+msgstr ""
+
+#. module: ssi_hr_recruitment
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_vacancy__reason
+msgid "Reason why this vacancy is needed."
 msgstr ""
 
 #. module: ssi_hr_recruitment
@@ -2225,6 +2282,30 @@ msgid "Waiting for Approval"
 msgstr ""
 
 #. module: ssi_hr_recruitment
+#: model:ir.model.fields,field_description:ssi_hr_recruitment.field_applicant_academic__website_message_ids
+#: model:ir.model.fields,field_description:ssi_hr_recruitment.field_applicant_certification__website_message_ids
+#: model:ir.model.fields,field_description:ssi_hr_recruitment.field_applicant_experience__website_message_ids
+#: model:ir.model.fields,field_description:ssi_hr_recruitment.field_applicant_experience_mixin__website_message_ids
+#: model:ir.model.fields,field_description:ssi_hr_recruitment.field_recruitment_applicant__website_message_ids
+#: model:ir.model.fields,field_description:ssi_hr_recruitment.field_recruitment_stage__website_message_ids
+#: model:ir.model.fields,field_description:ssi_hr_recruitment.field_recruitment_stage_result__website_message_ids
+#: model:ir.model.fields,field_description:ssi_hr_recruitment.field_recruitment_vacancy__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: ssi_hr_recruitment
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_applicant_academic__website_message_ids
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_applicant_certification__website_message_ids
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_applicant_experience__website_message_ids
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_applicant_experience_mixin__website_message_ids
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_applicant__website_message_ids
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_stage__website_message_ids
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_stage_result__website_message_ids
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_vacancy__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: ssi_hr_recruitment
 #: model:ir.model.fields.selection,name:ssi_hr_recruitment.selection__recruitment_applicant__marital__widower
 msgid "Widower"
 msgstr ""
@@ -2242,6 +2323,18 @@ msgstr ""
 #. module: ssi_hr_recruitment
 #: model:ir.model.fields,field_description:ssi_hr_recruitment.field_recruitment_applicant__work_phone
 msgid "Work Phone"
+msgstr ""
+
+#. module: ssi_hr_recruitment
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_applicant__state
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_applicant_stage__state
+#: model:ir.model.fields,help:ssi_hr_recruitment.field_recruitment_vacancy__state
+msgid ""
+"Workflow status of the document\n"
+"\n"
+"* 'draft' is the only base state provided by this mixin.\n"
+"* Other states (e.g. confirmed, done, cancel) are added by derivative mixin\n"
+"  modules (such as confirm/done/cancel mixins) via 'selection_add'."
 msgstr ""
 
 #. module: ssi_hr_recruitment
