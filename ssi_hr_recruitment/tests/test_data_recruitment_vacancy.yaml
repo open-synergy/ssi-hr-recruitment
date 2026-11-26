@@ -203,3 +203,103 @@ scenarios:
           all_recruited:
             type: "value"
             expected: false
+
+  - name: "Recruitment Vacancy - Expected join date and reason"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job RV Join Date"
+
+      - step: "Create vacancy with expected join date and reason"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+          expected_join_date: 2025-12-31
+          reason: "Replacement of a resigned employee"
+
+      - step: "Assert values are stored"
+        action: "assert"
+        target: "vacancy"
+        asserts:
+          expected_join_date:
+            type: "value"
+            expected: "EVAL: datetime(2025, 12, 31).date()"
+          reason:
+            type: "value"
+            expected: "Replacement of a resigned employee"
+
+      - step: "Confirm vacancy"
+        action: "call"
+        target: "vacancy"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+          reason:
+            type: "value"
+            expected: "Replacement of a resigned employee"
+
+  - name: "Recruitment Vacancy - Expected join date before start date"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job RV Join Date Invalid"
+
+      - step: "Expected join date one day before start date is rejected"
+        action: "create"
+        model: "recruitment_vacancy"
+        as_user: "base.user_admin"
+        expect_error:
+          type: "ValidationError"
+          message_contains: "Expected join date is earlier than start date"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-02
+          date_end: 2025-12-31
+          expected_join_date: 2025-01-01
+
+  - name: "Recruitment Vacancy - Without expected join date and reason"
+    steps:
+      - step: "Setup - create job position"
+        action: "create"
+        model: "hr.job"
+        save_as: "job"
+        values:
+          name: "Test Job RV Join Date Empty"
+
+      - step: "Create vacancy without the new fields"
+        action: "create"
+        model: "recruitment_vacancy"
+        save_as: "vacancy"
+        as_user: "base.user_admin"
+        values:
+          job_id: "EVAL: registry['job'].id"
+          applicant_number: 1
+          date_start: 2025-01-01
+          date_end: 2025-12-31
+
+      - step: "Assert new fields are empty"
+        action: "assert"
+        target: "vacancy"
+        asserts:
+          expected_join_date:
+            type: "value"
+            expected: false
+          reason:
+            type: "value"
+            expected: false
